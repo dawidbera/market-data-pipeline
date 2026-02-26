@@ -1,0 +1,6 @@
+rootProject.name = 'market-data-pipeline'
+
+include 'common'
+include 'ingestor-service'
+include 'processor-service'
+include 'dashboard-backend'

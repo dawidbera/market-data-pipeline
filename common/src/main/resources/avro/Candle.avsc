@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "Candle",
+  "namespace": "com.market.pipeline.common.avro",
+  "fields": [
+    {"name": "symbol", "type": "string"},
+    {"name": "open", "type": "double"},
+    {"name": "high", "type": "double"},
+    {"name": "low", "type": "double"},
+    {"name": "close", "type": "double"},
+    {"name": "volume", "type": "long"},
+    {"name": "window_start", "type": "long"},
+    {"name": "window_end", "type": "long"}
+  ]
+}
