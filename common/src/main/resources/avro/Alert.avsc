@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "Alert",
+  "namespace": "com.market.pipeline.common.avro",
+  "fields": [
+    {"name": "symbol", "type": "string"},
+    {"name": "type", "type": "string"},
+    {"name": "message", "type": "string"},
+    {"name": "timestamp", "type": "long"}
+  ]
+}
