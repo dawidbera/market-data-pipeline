@@ -1,0 +1,23 @@
+# Maven
+target/
+*.jar
+*.war
+*.zip
+
+# Java Class files
+*.class
+
+# Logs
+*.log
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# Node.js
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
