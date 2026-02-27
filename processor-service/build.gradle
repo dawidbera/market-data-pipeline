@@ -5,11 +5,15 @@ plugins {
 
 dependencies {
     implementation project(':common')
+    implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.apache.kafka:kafka-streams'
     implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'io.confluent:kafka-streams-avro-serde:7.7.0'
     
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.apache.kafka:kafka-streams-test-utils'
 }
 
 bootJar {
