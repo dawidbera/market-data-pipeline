@@ -48,6 +48,12 @@ graph TD
         FE[Angular Dashboard]
     end
 
+    subgraph "Observability"
+        PROM[Prometheus]
+        GRAF[Grafana]
+        JAEG[Jaeger]
+    end
+
     APIs --> IS
     IS -- serialize Avro --> K
     K -- consume raw --> PS
@@ -55,6 +61,11 @@ graph TD
     DS -- persist --> DB
     DS -- cache latest --> R
     DS -- WebSocket/REST --> FE
+
+    %% Observability flows
+    IS & PS & DS -. metrics .-> PROM
+    IS & PS & DS -. traces .-> JAEG
+    PROM & JAEG --> GRAF
 ```
 
 ### Data Flow Sequence
@@ -69,16 +80,20 @@ sequenceDiagram
     participant DB as TimescaleDB
     participant R as Redis
     participant FE as Angular Frontend
+    participant OBS as Observability (Prom/Jaeger)
 
     API->>IS: Fetch Ticks
     IS->>K: Publish Avro Tick
+    IS-->>OBS: Export Metrics/Traces
     K->>PS: Consume Tick
     PS->>PS: Windowed OHLC / Anomaly
     PS->>KA: Publish Candle / Alert
+    PS-->>OBS: Export Metrics/Traces
     KA->>DS: Consume Candle / Alert
     DS->>DB: Persist Entity
     DS->>R: Cache Latest
     DS->>FE: WebSocket Update (Live)
+    DS-->>OBS: Export Metrics/Traces
     FE->>DS: REST Request (Historical)
     DS-->>FE: History Data
 ```
@@ -138,6 +153,7 @@ Use the provided automation script to run everything:
 ├── ingestor-service/   # Data ingestion (Loom + Producer)
 ├── processor-service/  # Kafka Streams logic
 ├── dashboard-backend/  # WebSockets, Redis & Persistence
+├── observability/      # Prometheus & Grafana configuration
 ├── scripts/            # Automation (tests, setup)
 ├── docker-compose.yml  # Local infrastructure
 └── build.gradle        # Root build configuration
