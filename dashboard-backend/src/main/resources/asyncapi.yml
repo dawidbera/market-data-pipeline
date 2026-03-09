@@ -1,0 +1,126 @@
+asyncapi: 3.0.0
+info:
+  title: Market Data Pipeline Streams & WebSockets
+  version: 1.0.0
+  description: Documentation for Kafka topics and WebSocket channels in the Market Data Pipeline.
+
+channels:
+  market.data.raw:
+    address: market.data.raw
+    messages:
+      tick:
+        $ref: '#/components/messages/Tick'
+    description: Raw market ticks ingested from external sources.
+
+  market.data.aggregated:
+    address: market.data.aggregated
+    messages:
+      candle:
+        $ref: '#/components/messages/Candle'
+    description: OHLC candles aggregated by the processor service.
+
+  market.data.alerts:
+    address: market.data.alerts
+    messages:
+      alert:
+        $ref: '#/components/messages/Alert'
+    description: Anomaly alerts detected in the market data stream.
+
+  ws-market:
+    address: /ws-market
+    messages:
+      candleUpdate:
+        $ref: '#/components/messages/Candle'
+      alertUpdate:
+        $ref: '#/components/messages/Alert'
+    description: WebSocket endpoint for live updates. Clients subscribe to `/topic/candles` or `/topic/alerts`.
+
+operations:
+  ingestTicks:
+    action: send
+    channel:
+      $ref: '#/channels/market.data.raw'
+    summary: Ingestor service sends raw ticks.
+  
+  processTicks:
+    action: receive
+    channel:
+      $ref: '#/channels/market.data.raw'
+    summary: Processor service consumes raw ticks.
+
+  publishAggregated:
+    action: send
+    channel:
+      $ref: '#/channels/market.data.aggregated'
+    summary: Processor service publishes windowed OHLC candles.
+
+  publishAlerts:
+    action: send
+    channel:
+      $ref: '#/channels/market.data.alerts'
+    summary: Processor service publishes anomaly alerts.
+
+  consumeForDashboard:
+    action: receive
+    channel:
+      $ref: '#/channels/market.data.aggregated'
+    summary: Dashboard backend consumes candles to persist and broadcast.
+
+  consumeAlertsForDashboard:
+    action: receive
+    channel:
+      $ref: '#/channels/market.data.alerts'
+    summary: Dashboard backend consumes alerts to persist and broadcast.
+
+components:
+  messages:
+    Tick:
+      payload:
+        type: object
+        properties:
+          symbol:
+            type: string
+          price:
+            type: number
+          volume:
+            type: number
+          timestamp:
+            type: integer
+            format: int64
+    
+    Candle:
+      payload:
+        type: object
+        properties:
+          symbol:
+            type: string
+          open:
+            type: number
+          high:
+            type: number
+          low:
+            type: number
+          close:
+            type: number
+          volume:
+            type: number
+          windowStart:
+            type: integer
+            format: int64
+          windowEnd:
+            type: integer
+            format: int64
+
+    Alert:
+      payload:
+        type: object
+        properties:
+          symbol:
+            type: string
+          type:
+            type: string
+          message:
+            type: string
+          timestamp:
+            type: integer
+            format: int64
