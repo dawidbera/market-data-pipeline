@@ -33,6 +33,15 @@ public class MarketDataConsumerService {
     private final CandleRepository candleRepository;
     private final AlertRepository alertRepository;
 
+    /**
+     * Constructs the service with required dependencies for messaging, caching, and persistence.
+     * 
+     * @param messagingTemplate the template for sending messages via WebSockets
+     * @param redisTemplate the template for interacting with Redis
+     * @param tickRepository the repository for tick data
+     * @param candleRepository the repository for candle data
+     * @param alertRepository the repository for alert data
+     */
     public MarketDataConsumerService(SimpMessagingTemplate messagingTemplate, 
                                      RedisTemplate<String, Object> redisTemplate,
                                      TickRepository tickRepository,
@@ -52,7 +61,7 @@ public class MarketDataConsumerService {
      */
     @KafkaListener(topics = "market.data.raw")
     public void consumeRawData(Tick tick) {
-        log.debug("Consumed Tick: {}", tick);
+        log.info("Consumed Tick: {}", tick);
         tickRepository.save(TickEntity.builder()
                 .symbol(tick.getSymbol())
                 .price(tick.getPrice())

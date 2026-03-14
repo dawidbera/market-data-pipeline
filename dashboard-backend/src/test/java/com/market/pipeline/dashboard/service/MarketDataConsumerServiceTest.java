@@ -45,6 +45,9 @@ class MarketDataConsumerServiceTest {
 
     private MarketDataConsumerService consumerService;
 
+    /**
+     * Initializes the service with mocked dependencies before each test.
+     */
     @BeforeEach
     void setUp() {
         consumerService = new MarketDataConsumerService(
