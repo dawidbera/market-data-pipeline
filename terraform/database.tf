@@ -148,6 +148,8 @@ resource "null_resource" "convert_to_hypertables" {
       PGPASSWORD=${var.db_password} psql -h ${var.db_host} -p ${var.db_port} -U ${var.db_username} -d ${var.db_name} -c "SELECT create_hypertable('ticks', 'timestamp', if_not_exists => TRUE);"
       PGPASSWORD=${var.db_password} psql -h ${var.db_host} -p ${var.db_port} -U ${var.db_username} -d ${var.db_name} -c "SELECT create_hypertable('candles', 'window_start', if_not_exists => TRUE);"
       PGPASSWORD=${var.db_password} psql -h ${var.db_host} -p ${var.db_port} -U ${var.db_username} -d ${var.db_name} -c "SELECT create_hypertable('alerts', 'timestamp', if_not_exists => TRUE);"
+      PGPASSWORD=${var.db_password} psql -h ${var.db_host} -p ${var.db_port} -U ${var.db_username} -d ${var.db_name} -c "SELECT add_retention_policy('ticks', INTERVAL '7 days', if_not_exists => TRUE);"
+      PGPASSWORD=${var.db_password} psql -h ${var.db_host} -p ${var.db_port} -U ${var.db_username} -d ${var.db_name} -c "SELECT add_retention_policy('candles', INTERVAL '30 days', if_not_exists => TRUE);"
 EOF
   }
 }
