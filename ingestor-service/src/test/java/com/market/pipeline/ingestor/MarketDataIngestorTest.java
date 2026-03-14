@@ -25,6 +25,9 @@ class MarketDataIngestorTest {
 
     private MarketDataIngestor ingestor;
 
+    /**
+     * Initializes the ingestor with a mocked Kafka template before each test.
+     */
     @BeforeEach
     void setUp() {
         ingestor = new MarketDataIngestor(kafkaTemplate);
