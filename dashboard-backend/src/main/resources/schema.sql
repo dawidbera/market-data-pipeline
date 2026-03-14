@@ -37,6 +37,6 @@ SELECT create_hypertable('alerts', 'timestamp', if_not_exists => TRUE);
 
 -- Retention Policies
 -- Ticks: 7 days
--- SELECT add_retention_policy('ticks', INTERVAL '7 days');
+SELECT add_retention_policy('ticks', INTERVAL '7 days', if_not_exists => TRUE);
 -- Candles: 30 days
--- SELECT add_retention_policy('candles', INTERVAL '30 days');
+SELECT add_retention_policy('candles', INTERVAL '30 days', if_not_exists => TRUE);
