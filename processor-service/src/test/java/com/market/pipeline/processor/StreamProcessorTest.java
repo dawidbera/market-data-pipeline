@@ -38,6 +38,10 @@ class StreamProcessorTest {
     private SpecificAvroSerde<Alert> alertSerde;
     private SchemaRegistryClient schemaRegistryClient;
 
+    /**
+     * Sets up the Kafka Streams topology test driver and required serdes.
+     * Uses a mock schema registry client for testing Avro serialization.
+     */
     @BeforeEach
     void setup() {
         schemaRegistryClient = new MockSchemaRegistryClient();
@@ -82,6 +86,9 @@ class StreamProcessorTest {
                 alertSerde.deserializer());
     }
 
+    /**
+     * Closes the test driver after each test.
+     */
     @AfterEach
     void tearDown() {
         if (testDriver != null) {
