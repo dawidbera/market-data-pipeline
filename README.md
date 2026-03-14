@@ -16,12 +16,14 @@ A high-performance, enterprise-grade real-time financial data processing engine.
 ### System Overview
 ```mermaid
 graph TD
-    subgraph "External Sources"
+    subgraph "External Sources / Testing"
         APIs[Mock/Real Market APIs]
+        GAT[Gatling Load Tester]
     end
 
     subgraph "Ingestor Service"
         IS[Ingestor]
+        IS_H[Liveness/Readiness]
     end
 
     subgraph "Messaging & Registry"
@@ -31,29 +33,33 @@ graph TD
 
     subgraph "Processing Layer"
         PS[Processor Service]
+        PS_H[Liveness/Readiness]
         PS -- windowed agg --> K
         PS -- alert detection --> K
     end
 
     subgraph "Storage & State"
-        DB[(TimescaleDB)]
+        DB[(TimescaleDB + Retention)]
         R[(Redis Cache)]
     end
 
     subgraph "API & Dashboard"
         DS[Dashboard Backend]
+        DS_H[Liveness/Readiness]
     end
 
     subgraph "Frontend"
         FE[Angular Dashboard]
     end
 
-    subgraph "Observability"
+    subgraph "Observability & QA"
         PROM[Prometheus]
         GRAF[Grafana]
         JAEG[Jaeger]
+        TC[Testcontainers]
     end
 
+    GAT -- stress test --> IS
     APIs --> IS
     IS -- serialize Avro --> K
     K -- consume raw --> PS
@@ -62,10 +68,11 @@ graph TD
     DS -- cache latest --> R
     DS -- WebSocket/REST --> FE
 
-    %% Observability flows
+    %% Observability & Health
     IS & PS & DS -. metrics .-> PROM
     IS & PS & DS -. traces .-> JAEG
     PROM & JAEG --> GRAF
+    TC -. ephemeral env .-> IS & PS & DS
 ```
 
 ### Data Flow Sequence
@@ -135,15 +142,16 @@ sequenceDiagram
 
 ## 🧪 Testing
 
-The project includes a comprehensive suite of tests:
+The project includes a comprehensive suite of tests ensuring high reliability:
 *   **Unit Tests:** Business logic verification using JUnit 5 and Mockito.
+*   **Integration Tests:** Real-world scenarios using **Testcontainers** (Kafka, PostgreSQL, Redis) to provide ephemeral environments.
 *   **Topology Tests:** Kafka Streams logic validation using `TopologyTestDriver`.
-*   **Context Tests:** Spring Boot application context and configuration validation.
+*   **Sequential Debugging:** A specialized runner to isolate and debug tests method by method.
 
-Use the provided automation script to run everything:
-```bash
-./scripts/test-all.sh
-```
+### Running Tests
+*   **All tests (Standard):** `./scripts/test-all.sh`
+*   **Sequential (Diagnostic):** `./scripts/run-tests-sequentially.sh`
+*   **Load Testing (Planned):** Gatling simulations for end-to-end performance.
 
 ## 📂 Project Structure
 
