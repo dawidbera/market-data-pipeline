@@ -11,5 +11,12 @@ import java.util.List;
  */
 @Repository
 public interface AlertRepository extends JpaRepository<AlertEntity, Long> {
+    /**
+     * Finds historical alerts for a specific market symbol, 
+     * ordered by their timestamp in descending order.
+     * 
+     * @param symbol the market symbol to search for
+     * @return a list of alerts for the symbol, newest first
+     */
     List<AlertEntity> findBySymbolOrderByTimestampDesc(String symbol);
 }
