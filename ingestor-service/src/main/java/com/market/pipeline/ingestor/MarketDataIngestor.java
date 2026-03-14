@@ -23,6 +23,11 @@ public class MarketDataIngestor {
     private final Random random = new Random();
     private final String[] SYMBOLS = {"AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"};
 
+    /**
+     * Constructs the ingestor with the required Kafka template for publishing ticks.
+     * 
+     * @param kafkaTemplate the template for sending market tick data to Kafka
+     */
     public MarketDataIngestor(KafkaTemplate<String, Tick> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
