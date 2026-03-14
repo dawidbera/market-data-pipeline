@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'io.gatling.gradle' version '3.11.5.1'
+    id 'io.gatling.gradle' version '3.13.3'
 }
 
 group = 'com.market.pipeline'
@@ -14,6 +14,3 @@ dependencies {
     // Gatling Java SDK is included by the plugin
 }
 
-gatling {
-    // Optional configuration for Gatling
-}

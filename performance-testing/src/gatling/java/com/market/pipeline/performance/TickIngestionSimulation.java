@@ -23,7 +23,7 @@ import static io.gatling.javaapi.http.HttpDsl.status;
 public class TickIngestionSimulation extends Simulation {
 
     private final HttpProtocolBuilder httpProtocol = http
-            .baseUrl("http://localhost:8081") // Default port for ingestor-service
+            .baseUrl("http://localhost:8082") // Default port for ingestor-service
             .acceptHeader("application/json")
             .contentTypeHeader("application/json");
 
