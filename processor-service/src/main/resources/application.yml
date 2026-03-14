@@ -12,6 +12,11 @@ spring:
         default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
         default.value.serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
         schema.registry.url: http://localhost:8081
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      properties:
+        schema.registry.url: http://localhost:8081
 
 server:
   port: 8083

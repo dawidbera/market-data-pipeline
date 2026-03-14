@@ -34,7 +34,7 @@ public class StreamProcessor {
     private static final String OUTPUT_TOPIC_AGGREGATED = "market.data.aggregated";
     private static final String OUTPUT_TOPIC_ALERTS = "market.data.alerts";
 
-    @Value("${spring.kafka.properties.schema.registry.url:http://localhost:8081}")
+    @Value("${spring.kafka.streams.properties.schema.registry.url:http://localhost:8081}")
     private String schemaRegistryUrl;
 
     @Autowired(required = false)
@@ -61,12 +61,23 @@ public class StreamProcessor {
         detectAnomalies(ticks);
     }
 
+    /**
+     * Creates and configures a {@link SpecificAvroSerde} for a given Avro type.
+     * Uses the Schema Registry URL provided in the application configuration.
+     * 
+     * @param <T> the type of the Avro record
+     * @return a configured SpecificAvroSerde instance
+     */
     private <T extends org.apache.avro.specific.SpecificRecord> SpecificAvroSerde<T> getSpecificAvroSerde() {
         SpecificAvroSerde<T> serde = schemaRegistryClient != null 
                 ? new SpecificAvroSerde<>(schemaRegistryClient) 
                 : new SpecificAvroSerde<>();
         
-        serde.configure(Collections.singletonMap("schema.registry.url", schemaRegistryUrl), false);
+        Map<String, String> config = Map.of(
+                "schema.registry.url", schemaRegistryUrl,
+                "specific.avro.reader", "true"
+        );
+        serde.configure(config, false);
         return serde;
     }
 
