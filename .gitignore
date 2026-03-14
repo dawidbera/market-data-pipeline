@@ -8,6 +8,7 @@ out/
 
 # Logs
 *.log
+*.txt
 
 # IDEs
 .vscode/
