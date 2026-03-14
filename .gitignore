@@ -9,6 +9,7 @@ bin/
 
 # Logs
 *.log
+*.txt
 
 # IDEs
 .vscode/
