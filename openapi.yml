@@ -1,0 +1,166 @@
+openapi: 3.0.3
+info:
+  title: Market Data Pipeline API
+  version: 1.0.0
+  description: |
+    API documentation for the Market Data Pipeline system.
+    Includes endpoints for data ingestion (Ingestor Service) and historical data retrieval (Dashboard Backend).
+servers:
+  - url: http://localhost:8080
+    description: Dashboard Backend (API Gateway)
+  - url: http://localhost:8082
+    description: Ingestor Service
+tags:
+  - name: Ingestion
+    description: APIs for ingesting raw market data
+  - name: Market Data
+    description: APIs for retrieving historical market data
+
+paths:
+  /api/ingest/tick:
+    post:
+      tags:
+        - Ingestion
+      summary: Ingest a new market tick
+      description: |
+        Receives a raw market tick (price, volume) for a specific symbol and pushes it to the Kafka processing pipeline.
+        This endpoint is optimized for high throughput.
+      operationId: ingestTick
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TickRequest'
+      responses:
+        '200':
+          description: Tick successfully received and queued
+        '400':
+          description: Invalid input data
+        '500':
+          description: Internal server error
+
+  /api/market/candles/{symbol}:
+    get:
+      tags:
+        - Market Data
+      summary: Get historical candles
+      description: Retrieves a list of OHLC (Open-High-Low-Close) candles for a given symbol, ordered by time (descending).
+      operationId: getHistoricalCandles
+      parameters:
+        - name: symbol
+          in: path
+          description: Market symbol (e.g., AAPL, BTC-USD)
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of candles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CandleResponse'
+        '404':
+          description: Symbol not found
+
+  /api/market/alerts/{symbol}:
+    get:
+      tags:
+        - Market Data
+      summary: Get historical alerts
+      description: Retrieves a list of anomaly alerts for a given symbol, ordered by time (descending).
+      operationId: getHistoricalAlerts
+      parameters:
+        - name: symbol
+          in: path
+          description: Market symbol
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AlertResponse'
+
+components:
+  schemas:
+    TickRequest:
+      type: object
+      required:
+        - symbol
+        - price
+        - volume
+      properties:
+        symbol:
+          type: string
+          example: "AAPL"
+        price:
+          type: number
+          format: double
+          example: 150.25
+        volume:
+          type: integer
+          format: int64
+          example: 1000
+        timestamp:
+          type: integer
+          format: int64
+          description: Epoch timestamp in milliseconds. Defaults to current time if null.
+          example: 1678886400000
+
+    CandleResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        symbol:
+          type: string
+        open:
+          type: number
+          format: double
+        high:
+          type: number
+          format: double
+        low:
+          type: number
+          format: double
+        close:
+          type: number
+          format: double
+        volume:
+          type: integer
+          format: int64
+        windowStart:
+          type: string
+          format: date-time
+          description: Start of the aggregation window (ISO-8601)
+        windowEnd:
+          type: string
+          format: date-time
+          description: End of the aggregation window (ISO-8601)
+
+    AlertResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        symbol:
+          type: string
+        type:
+          type: string
+          example: "PRICE_SPIKE"
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
