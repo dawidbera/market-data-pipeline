@@ -104,10 +104,10 @@ components:
             type: number
           volume:
             type: number
-          windowStart:
+          window_start:
             type: integer
             format: int64
-          windowEnd:
+          window_end:
             type: integer
             format: int64
 
