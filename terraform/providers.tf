@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     kafka = {
-      source  = "monzo/kafka"
-      version = "~> 0.7.0"
+      source  = "Mongey/kafka"
+      version = "~> 0.13.0"
     }
     postgresql = {
       source  = "cyrilgdn/postgresql"
@@ -13,6 +13,7 @@ terraform {
 
 provider "kafka" {
   bootstrap_servers = [var.kafka_bootstrap_servers]
+  tls_enabled       = false
 }
 
 provider "postgresql" {
