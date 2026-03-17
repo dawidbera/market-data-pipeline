@@ -10,7 +10,10 @@ PROJECT_ROOT="$(dirname "$0")/.."
 cd "$PROJECT_ROOT"
 
 # Run clean to ensure no stale artifacts and execute all tests
-echo "🧹 Cleaning and running tests..."
+echo "🧹 Cleaning and running backend tests..."
 ./gradlew clean test
+
+echo "🎨 Running frontend tests..."
+./scripts/test-frontend.sh
 
 echo "✅ All tests passed successfully!"

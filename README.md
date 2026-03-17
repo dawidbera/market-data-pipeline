@@ -59,6 +59,8 @@ graph TD
         GRAF[Grafana]
         JAEG[Jaeger]
         TC[Testcontainers]
+        FET[Frontend Tests]
+        PROV[Provisioning]
     end
 
     GAT -- HTTP POST /api/ingest/tick --> IS
@@ -69,11 +71,13 @@ graph TD
     DS -- persist --> DB
     DS -- cache latest --> R
     DS -- WebSocket/REST --> FE
+    FET -. validates .-> FE
 
     %% Observability & Health
     IS & PS & DS -. metrics .-> PROM
     IS & PS & DS -. traces .-> JAEG
-    PROM & JAEG --> GRAF
+    PROM -- query --> GRAF
+    PROV -. auto-load .-> GRAF
     TC -. ephemeral env .-> IS & PS & DS
 ```
 
@@ -149,16 +153,32 @@ sequenceDiagram
     ./gradlew :dashboard-backend:bootRun
     ```
 
-## 🧪 Testing
+    4.  **Start the Frontend:**
+    ```bash
+    cd frontend
+    npm install
+    npm start
+    ```
+    Access the dashboard at `http://localhost:4200`.
+
+    ### Frontend Status
+    *   The Angular frontend is implemented using Signals, RxJS, and Tailwind CSS.
+    *   Real-time alerts are functional.
+    *   **Automated Testing:** Unit tests are fully functional and run in headless mode.
+    *   **Note on Charting:** Integration of the `lightweight-charts` library is currently facing module resolution issues in the build/test environment. A placeholder is displayed where the chart would normally be.
+
+    ## 🧪 Testing
 
 The project includes a comprehensive suite of tests ensuring high reliability:
 *   **Unit Tests:** Business logic verification using JUnit 5 and Mockito.
 *   **Integration Tests:** Real-world scenarios using **Testcontainers** (Kafka, PostgreSQL, Redis) to provide ephemeral environments.
+*   **Frontend Tests:** Angular unit tests running via Karma in **ChromeHeadlessNoSandbox** mode.
 *   **Topology Tests:** Kafka Streams logic validation using `TopologyTestDriver`.
 *   **Sequential Debugging:** A specialized runner to isolate and debug tests method by method.
 
 ### Running Tests
-*   **All tests (Standard):** `./scripts/test-all.sh`
+*   **All tests (Full Verification):** `./scripts/test-all.sh` (Runs both Backend and Frontend)
+*   **Frontend only:** `./scripts/test-frontend.sh`
 *   **Sequential (Diagnostic):** `./scripts/run-tests-sequentially.sh`
 *   **Load Testing (Verified):** `./gradlew :performance-testing:gatlingRun`
 *   **End-to-End Latency Measurement:** `./scripts/measure-latency.sh` (Verified: **165 ms**)
