@@ -87,6 +87,9 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
         timeVisible: true,
         secondsVisible: true,
       },
+      watermark: {
+        visible: false,
+      },
     });
 
     this.candlestickSeries = (this.chart as any).addCandlestickSeries({ 
