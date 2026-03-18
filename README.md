@@ -179,6 +179,11 @@ The project includes a comprehensive suite of tests ensuring high reliability:
 *   **Topology Tests:** Kafka Streams logic validation using `TopologyTestDriver`.
 *   **Sequential Debugging:** A specialized runner to isolate and debug tests method by method.
 
+## ⚙️ CI/CD
+The project uses **GitHub Actions** for continuous integration. Every push or pull request to the `master` branch automatically triggers the following pipeline:
+*   **Backend:** Builds the project and runs all Gradle tests using Java 21.
+*   **Frontend:** Installs dependencies and executes Angular unit tests in a headless Chrome environment.
+
 ### Running Tests
 *   **All tests (Full Verification):** `./scripts/test-all.sh` (Runs both Backend and Frontend)
 *   **Frontend only:** `./scripts/test-frontend.sh`
