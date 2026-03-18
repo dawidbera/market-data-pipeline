@@ -76,6 +76,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
       layout: {
         background: { type: 'Solid', color: '#0f172a' }, // Slate 900
         textColor: '#cbd5e1', // Slate 300
+        attributionLogo: false,
       },
       grid: {
         vertLines: { color: '#1e293b' },
