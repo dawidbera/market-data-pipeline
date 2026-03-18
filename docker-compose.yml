@@ -77,6 +77,9 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: market-grafana
+    volumes:
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning
+      - ./observability/grafana/dashboards:/etc/grafana/dashboards
     ports:
       - "3000:3000"
     environment:
