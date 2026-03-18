@@ -21,14 +21,16 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
 
   private chart: any | null = null; // Use any to bypass type issues
   private candlestickSeries: any | null = null;
+  private lastUpdateTime = 0;
   private resizeObserver: ResizeObserver | null = null;
 
   constructor(private marketData: MarketDataService) {
     // Effect to handle real-time updates
     effect(() => {
       const candle = this.marketData.latestCandle();
-      if (candle && this.candlestickSeries) {
+      if (candle && this.candlestickSeries && candle.window_start > this.lastUpdateTime) {
         this.updateChart(candle);
+        this.lastUpdateTime = candle.window_start;
       }
     });
 

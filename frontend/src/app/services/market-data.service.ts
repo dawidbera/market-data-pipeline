@@ -43,9 +43,19 @@ export class MarketDataService {
   // Fetch initial history via REST
   async loadHistory(symbol: string) {
     try {
-      const candles = await firstValueFrom(
-        this.http.get<Candle[]>(`${this.API_URL}/candles/${symbol}`)
+      const rawCandles = await firstValueFrom(
+        this.http.get<any[]>(`${this.API_URL}/candles/${symbol}`)
       );
+      const candles = rawCandles.map(c => ({
+        symbol: c.symbol,
+        open: Number(c.open),
+        high: Number(c.high),
+        low: Number(c.low),
+        close: Number(c.close),
+        volume: Number(c.volume),
+        window_start: Number(c.window_start),
+        window_end: Number(c.window_end)
+      })) as Candle[];
       // The API returns most recent first, chart needs oldest first usually, or we sort it.
       // Let's ensure it's sorted by time ascending for the chart.
       const sorted = candles.sort((a, b) => a.window_start - b.window_start);
@@ -58,7 +68,19 @@ export class MarketDataService {
   private subscribeToCandles() {
     // Hardcoded to AAPL for MVP
     this.wsService.watch('/topic/candles/AAPL').pipe(
-      map(message => JSON.parse(message.body) as Candle)
+      map(message => {
+        const parsed = JSON.parse(message.body);
+        return {
+          symbol: parsed.symbol,
+          open: Number(parsed.open),
+          high: Number(parsed.high),
+          low: Number(parsed.low),
+          close: Number(parsed.close),
+          volume: Number(parsed.volume),
+          window_start: Number(parsed.window_start),
+          window_end: Number(parsed.window_end)
+        } as Candle;
+      })
     ).subscribe({
       next: (candle) => {
         // console.log('Received candle:', candle);
