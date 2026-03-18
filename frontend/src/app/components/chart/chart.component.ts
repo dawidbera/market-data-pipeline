@@ -68,11 +68,19 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.resizeObserver?.disconnect();
-    (this.chart as any).remove();
+    if (this.chart) {
+      this.chart.remove();
+    }
   }
 
   private initChart() {
-    this.chart = ((window as any).LightweightCharts as any).createChart(this.chartContainer.nativeElement, {
+    const lwCharts = (window as any).LightweightCharts;
+    if (!lwCharts) {
+      console.warn('LightweightCharts not found, skipping chart initialization.');
+      return;
+    }
+    
+    this.chart = lwCharts.createChart(this.chartContainer.nativeElement, {
       layout: {
         background: { type: 'Solid', color: '#0f172a' }, // Slate 900
         textColor: '#cbd5e1', // Slate 300
@@ -93,7 +101,7 @@ export class ChartComponent implements AfterViewInit, OnDestroy {
       },
     });
 
-    this.candlestickSeries = (this.chart as any).addCandlestickSeries({ 
+    this.candlestickSeries = this.chart.addCandlestickSeries({ 
       upColor: '#22c55e', // Green 500
       downColor: '#ef4444', // Red 500
       borderVisible: false,
