@@ -81,6 +81,9 @@ graph TD
     TC -. ephemeral env .-> IS & PS & DS
 ```
 
+### Dashboard UI
+![Market Data Pipeline Dashboard](docs/image/dashboard.jpg)
+
 ### Data Flow Sequence
 ```mermaid
 sequenceDiagram
@@ -164,8 +167,8 @@ sequenceDiagram
     ### Frontend Status
     *   The Angular frontend is implemented using Signals, RxJS, and Tailwind CSS.
     *   Real-time alerts are functional.
+    *   **Charting:** Integration of the `lightweight-charts` library is fully functional.
     *   **Automated Testing:** Unit tests are fully functional and run in headless mode.
-    *   **Note on Charting:** Integration of the `lightweight-charts` library is currently facing module resolution issues in the build/test environment. A placeholder is displayed where the chart would normally be.
 
     ## 🧪 Testing
 
