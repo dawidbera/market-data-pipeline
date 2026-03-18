@@ -53,8 +53,8 @@ export class MarketDataService {
         low: Number(c.low),
         close: Number(c.close),
         volume: Number(c.volume),
-        window_start: Number(c.window_start),
-        window_end: Number(c.window_end)
+        window_start: typeof c.window_start === 'string' ? Date.parse(c.window_start) : Number(c.window_start?.$numberLong || c.window_start),
+        window_end: typeof c.window_end === 'string' ? Date.parse(c.window_end) : Number(c.window_end?.$numberLong || c.window_end)
       })) as Candle[];
       // The API returns most recent first, chart needs oldest first usually, or we sort it.
       // Let's ensure it's sorted by time ascending for the chart.
@@ -77,8 +77,8 @@ export class MarketDataService {
           low: Number(parsed.low),
           close: Number(parsed.close),
           volume: Number(parsed.volume),
-          window_start: Number(parsed.window_start),
-          window_end: Number(parsed.window_end)
+          window_start: typeof parsed.window_start === 'string' ? Date.parse(parsed.window_start) : Number(parsed.window_start?.$numberLong || parsed.window_start),
+          window_end: typeof parsed.window_end === 'string' ? Date.parse(parsed.window_end) : Number(parsed.window_end?.$numberLong || parsed.window_end)
         } as Candle;
       })
     ).subscribe({
