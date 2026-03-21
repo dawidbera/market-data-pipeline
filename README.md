@@ -4,12 +4,12 @@ A high-performance, enterprise-grade real-time financial data processing engine.
 
 ## 🚀 Key Features
 
-*   **High Throughput:** Leveraging **Java 21 Virtual Threads (Project Loom)** for efficient data ingestion.
+*   **High Throughput:** Optimized for efficient data ingestion.
 *   **Stateful Processing:** Real-time windowed aggregations (1-minute and 5-minute OHLC candles) using **Kafka Streams** with correctly configured internal topics.
 *   **Schema First:** Strong typing and data integrity ensured by **Avro** and **Confluent Schema Registry**.
 *   **Time-Series Optimized:** Historical data persistence using **TimescaleDB** (PostgreSQL extension).
 *   **Reactive UI:** Real-time updates delivered to an **Angular** frontend via **WebSockets**.
-*   **Cloud-Native:** Infrastructure as Code with **Terraform** and **Ansible**, orchestrated on **K3s**.
+*   **Cloud-Native Foundations:** Infrastructure as Code with **Terraform** and local orchestration using **Docker Compose**.
 *   **Robust Services:** All backend services (Ingestor, Processor, Dashboard) now include health endpoints and are reliably started.
 
 ## 🏗️ Architecture & Flow
@@ -127,7 +127,7 @@ sequenceDiagram
 *   **Streaming:** Apache Kafka (KRaft), Kafka Streams, Avro
 *   **Storage:** TimescaleDB (PostgreSQL), Redis (Caching)
 *   **Frontend:** Angular 18+ (Signals, RxJS, Tailwind CSS)
-*   **DevOps:** Docker, Kubernetes (K3s), Terraform, Ansible
+*   **DevOps:** Docker, Terraform
 *   **Observability:** Prometheus, Grafana, OpenTelemetry, Jaeger
 
 ## 🚦 Getting Started
@@ -210,7 +210,7 @@ The system successfully passed stress testing scenarios designed to simulate hig
 *   **Tool:** Gatling 3.9
 *   **Environment:** Local Docker-based setup (constrained resources)
 *   **Hardware:** Linux Workstation
-*   **Target:** `ingestor-service` (Spring Boot + Loom) -> Kafka (KRaft)
+*   **Target:** `ingestor-service` (Spring Boot) -> Kafka (KRaft)
 
 ### 2. Workload Model (`TickIngestionSimulation`)
 *   **Pattern:** Open Workload Model
@@ -239,12 +239,13 @@ The system successfully passed stress testing scenarios designed to simulate hig
 ```text
 .
 ├── common/             # Avro schemas and shared DTOs
-├── ingestor-service/   # Data ingestion (Loom + Producer)
+├── ingestor-service/   # Data ingestion (Producer)
 ├── processor-service/  # Kafka Streams logic
 ├── dashboard-backend/  # WebSockets, Redis & Persistence
 ├── performance-testing/ # Gatling load simulations & E2E latency script
 ├── observability/      # Prometheus & Grafana configuration
 ├── scripts/            # Automation (tests, setup)
+├── terraform/          # Infrastructure for Kafka & DB
 ├── docker-compose.yml  # Local infrastructure
 └── build.gradle        # Root build configuration
 ```
